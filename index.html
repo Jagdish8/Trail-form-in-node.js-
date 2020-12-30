@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0"/>
+    <title>Trail form</title>
+    <base href="/">
+	<link rel="stylesheet" type="text/css" href="formm.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+
+	<img src="logo1.png" style="width:10%;">
+	<br>
+	
+	<div class="container">
+
+		<form id="subform" action="/index" method="post">
+
+			<div class="field" tabindex="1">
+				<label for="pname">
+					<i class="pname"></i>Parent's Name:
+				</label>
+				<input name="pname" type="text" placeholder="e.g. john doe" required onchange="calle(this.id)">
+			</div>
+
+			<div class="field" tabindex="2">
+				<label for="pnum">
+					<i class="pnum"></i>Parent's Contact Number:
+				</label>
+				<input type="tel" placeholder="e.g. 9999988888" pattern="[0-9]{10}" required>
+			</div>
+
+			<div class="field" tabindex="3">
+				<label for="pmail">
+					<i class="pmail"></i>Parent's Email ID:
+				</label>
+				<input name="email" type="text" placeholder="email@domain.com" required>
+			</div>
+			<br>
+
+			<div class="field" tabindex="4">
+				<label for="cname">
+					<i class="cname"></i>Child's Name:
+				</label>
+				<input name="cname" type="text" placeholder="e.g. mike doe" required>
+			</div>
+			<br>
+
+			<div class="field" tabindex="5">
+				<label for="cage">
+					<i class="cage"></i>Child's Age:
+				</label>
+				<input type="number" id="quantity" name="cage" min="5" max="18" placeholder="Between 5 to 18" required>
+			</div>
+			<br>
+
+			<div class="field" tabindex="6">
+				<label for="coname">
+					<i class="coname"></i>Course Name:
+				</label><br>
+				<select name="coname" id="coname" required onchange="populate(this.id,'slot')">
+					<option disabled selected value> -- select an option -- </option>
+					<option value="Scratch Junior">Scratch Junior</option>
+					<option value="Web Development">Web Development</option>
+					<option value="Game Development">Game Development</option>
+					<option value="App Development">App Development</option>
+					<option value="Python">Python</option>
+				  </select>
+			</div>
+			<br>
+
+			<div class="field" tabindex="7">
+				<label for="slot">
+					<i class="slot"></i>Choose a date:
+				</label><br>
+				<select name="slot" id="slot" required onchange="populate1(this.id,'tim')"><option disabled selected value> -- select an option -- </option></select>
+			</div>
+			<br>
+
+			<div class="field" tabindex="8">
+				<label for="tim">
+					<i class="tim"></i>Choose a time slot:
+				</label><br>
+				<select name="tim" id="tim" required>
+				<option disabled selected value> -- select an option -- </option>
+                </select>
+			</div>
+			
+			<button type="submit" value="Submit">SUBMIT</button>
+
+		</form>
+
+	</div>
+	<script>
+		var data;
+		function calle(s1){
+			$.getJSON('https://script.googleusercontent.com/macros/echo?user_content_key=E7bE5o1qz1kZ_yeK5Z9KRv2WBBNnK18zcL_ywN_JnaK4TbeXtLHlf6APAX1u7Zr8-EaCNgke0ZEUmm2uKMmoeBmw-KDm9nFJm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnC09Nb0QZ6ca_LU0vmo6mSiQ7SyFG3CgdL9-1Vgcha-TAYaAGhh-9xNG-9rMNEZHQRElvdDletx0&lib=MlJcTt87ug5f_XmzO-tnIbN3yFe7Nfhi6', function(dat){
+				//console.log(dat)
+				data=dat;
+			});
+		}
+		const monthNames = ["January", "February", "March", "April", "May","June","July", "August", "September", "October", "November", "December"];
+		var s11;
+		function populate(s1,s2){
+			//console.log(data);
+			s11 = document.getElementById(s1).value;
+			var s2 = document.getElementById(s2);
+			s2.innerHTML = "";
+			var sl;
+			if(s11 == data[0].course_name){
+				sl=data[0].slots
+			} else if(s11 == data[1].course_name){
+				sl=data[1].slots
+			} else if(s11 == data[2].course_name){
+				sl=data[2].slots
+			} else if(s11 == data[3].course_name){
+				sl=data[3].slots
+			} else {
+				sl=data[4].slots
+			}
+			var i;
+			const a=[];
+			var n=new Date();
+			var tn=n.getDate();
+			var th=n.getHours();
+			for(i=0;i<sl.length;i++){
+					//console.log(sl[i].slot);
+					//var td=n.getDay();
+					var f=new Date(Number(sl[i].slot));
+					//console.log(f)
+					var h=f.getHours();
+					var day=String(f.getDate());
+					if( (tn + 7 > f.getDate) || (tn > f.getDate()))
+					{}
+					else{
+						var month=monthNames[f.getMonth()];
+    					var year=f.getFullYear();
+    					day=day.concat(", ");
+    					day=day.concat(month);
+	    				day=day.concat(" ");
+						day=day.concat(year);
+						if(a.includes(day))
+						{}
+						else{
+							a.push(day);
+					}
+				}
+			}
+			var select = document.getElementById("slot");
+			function addele() { 
+				$.each(a, function(i, p) { 
+					//console.log(p);
+					$('#slot').append($('<option></option>')
+						.val(p).html(p)); 
+				}); 
+			}
+			addele();
+		}
+		function populate1(s2,s3){
+			console.log("hi");
+			console.log(s11);
+			var s2 = document.getElementById(s2).value;
+			var s3 = document.getElementById(s3);
+			s3.innerHTML ="";
+			console.log(s2)
+			var sl;
+			if(s11 == data[0].course_name){
+				sl=data[0].slots
+			} else if(s11 == data[1].course_name){
+				sl=data[1].slots
+			} else if(s11 == data[2].course_name){
+				sl=data[2].slots
+			} else if(s11 == data[3].course_name){
+				sl=data[3].slots
+			} else {
+				sl=data[4].slots
+			}
+			var i;
+			var f;
+			var n=new Date();
+			var th=n.getHours();
+			const a=[];
+			for(i=0;i<sl.length;i++){	
+				f=new Date(Number(sl[i].slot));
+				var month=monthNames[f.getMonth()];
+				var year=f.getFullYear();
+				var min = f.getMinutes()
+				var timi=f.getHours();
+    			var day=String(f.getDate());
+    			day=day.concat(", ");
+    			day=day.concat(month);
+	    		day=day.concat(" ");
+				day=day.concat(year);
+				if(day == s2 && th < 15 && timi - th >= 4){
+					var ti=f.getHours();
+					console.log(ti);
+					var days;
+					if(ti > 12){
+						days=String(ti - 12)+":"+min+" - "+String(ti - 11)+":"+min+" P.M.";
+					}else if(ti == 11){
+						days=String(ti)+":"+min+" - "+String(ti + 1)+":"+min+" P.M."
+					}else if(ti < 12){
+						days=String(ti)+":"+min+" - "+String(ti + 1)+":"+min+" A.M.";
+					} else {
+						days="12"+":"+min+" - "+"1"+":"+min+" P.M.";
+					}
+					if(Number(sl[i].instructor_count>1)){
+						for(var j=0;j<Number(sl[i].instructor_count);j++){
+							a.push(days+" Batch - "+String(j+1))
+						}
+					}
+					else{
+						if(a.includes(days))
+						{}
+						else{
+							a.push(days);
+						}
+					}
+				}
+			}		
+			var select = document.getElementById("tim");
+			function addele() { 
+				$.each(a, function(i, p) { 
+					//console.log(p);
+					$('#tim').append($('<option></option>')
+						.val(p).html(p)); 
+				}); 
+			}
+			addele();
+		}
+        var v1,v2,v3,hah;
+        $(function(){
+            $("#coname").change(function(){
+                const me = $("#coname option:selected").text();
+                v1=me;
+                
+            })
+        });
+        $(function(){
+            $("#slot").change(function(){
+                const me = $("#slot option:selected").text();
+                v2=me;
+                
+            })
+        });
+        $(function(){
+            $("#tim").change(function(){
+				const me = $("#tim option:selected").text();
+				const ha= $("#tim option:selected")
+				v3=me;
+				hah=ha;
+            })
+        });
+		var fo = document.getElementById("subform");
+		fo.onsubmit = function(e) {
+			e.preventDefault();
+            const paname=fo.pname.value;
+            //const telephone=fo.tel.value;
+            const mail=fo.email.value;
+            const chname=fo.cname.value;
+            //const chage=fo.cage.value;
+			const data={paname,mail,chname,v1,v2,v3};
+            console.log(data);
+            $.post('/email',data,function(){
+                console.log('server recevied data');
+			});
+			fo.reset();
+			location.reload(true);
+        };
+	</script>
+</body>
+</html>
